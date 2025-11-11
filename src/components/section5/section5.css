@@ -1,0 +1,62 @@
+.screen5 {
+    background-image: url('/section5/cover.png');
+    background-size: cover;
+    background-position: center;
+    padding: 120px 100px;
+}
+
+.blur-text-5 {
+    font-size: 48px;
+    line-height: 72px;
+    color: #fff;
+}
+
+.stats-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    height: 160px;
+}
+
+.divider-line {
+    width: 1px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.itemBox {
+    width: 256px;
+    height: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3.5px);
+}
+
+.count-up-text {
+    color: #F1F1F1;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 48px;
+}
+
+.itemBoxTop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 48px;
+}
+
+.itemBoxBottom {
+    color: #FFF;
+    font-size: 16px;
+    line-height: 24px;
+    margin-top: 4px;
+}

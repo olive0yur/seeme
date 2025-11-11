@@ -1,0 +1,103 @@
+.animation-circle {
+    transition: all ease-in-out 0.3s;
+}
+
+.arrow {
+    transition: all ease-in-out 0.4s;
+}
+
+.arrow-bottom {
+    transform: translate(-20px, 20px);
+    transition: all ease-in-out 0.55s;
+}
+
+.animation-bar:hover {
+    .animation-circle {
+        scale: 0.95;
+    }
+    .arrow {
+        transform: translate(20px, -20px);
+    }
+    .arrow-bottom {
+        transform: translate(0, 0);
+    }
+}
+
+.label-content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.slogan {
+    font-size: 48px;
+    line-height: 72px;
+}
+
+.screen {
+    padding: 40px 100px;
+}
+
+.blur-text {
+    white-space: nowarp;
+    font-size: 90px;
+    line-height: 108px;
+}
+
+.label-top {
+    white-space: nowarp;
+    font-size: 20px;
+    line-height: 20px;
+}
+
+.label-bottom {
+    opacity: 0.75;
+    font-size: 16px;
+    line-height: 16px;
+}
+
+@media screen and (max-width: 1550px) {
+    .blur-text {
+        font-size: 64px;
+        line-height: 76px;
+    }
+    .slogan {
+        font-size: 32px;
+        line-height: 56px;
+    }
+}
+
+@media screen and (max-width: 1268px) {
+    .blur-text {
+        font-size: 64px;
+        line-height: 76px;
+    }
+    .slogan {
+        font-size: 28px;
+        line-height: 52px;
+    }
+    .label-top {
+        font-size: 16px;
+        line-height: 16px;
+    }
+    .label-bottom {
+        font-size: 12px;
+        line-height: 12px;
+    }
+}
+
+@media screen and (max-width: 1087px) {
+    .label-content {
+        display: flex;
+        flex-direction: column;
+    }
+    .label-content-top {
+        margin-bottom: 40px;
+    }
+    .blur-text {
+        font-size: 50px;
+        line-height: 48px;
+    }
+    .screen {
+        padding: 12px 40px;
+    }
+}

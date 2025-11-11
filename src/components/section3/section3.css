@@ -1,0 +1,105 @@
+.screen3 {
+    padding-top: 120px;
+    padding-left: 100px;
+    padding-right: 100px;
+    color: #fff;
+    overflow: hidden;
+    /* 防止内容溢出 */
+    position: relative;
+}
+
+.blur-text-3 {
+    font-size: 90px;
+    line-height: 108px;
+    color: #fff;
+}
+
+.circle-container {
+    position: absolute;
+    width: 90vw;
+    height: 90vw;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -5%);
+    /* 优化渲染，减少模糊 */
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform-style: preserve-3d;
+    -webkit-font-smoothing: antialiased;
+}
+
+.scale-item {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 3;
+}
+
+.scale-dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #909090;
+    border-radius: 50%;
+    z-index: 5;
+}
+
+.scale-number {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    border: 1px solid #6C6C6C;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: normal;
+    color: #9A9A9A;
+    z-index: 10;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.scale-mark {
+    position: absolute;
+    width: 1px;
+    height: 142px;
+    background: rgba(217, 217, 217, 0.8);
+    transform-origin: top center;
+    top: 50%;
+    left: 50%;
+    margin-left: -0.5px;
+    /* 居中线条 */
+}
+
+.scale-text {
+    position: absolute;
+    font-size: 56px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.1;
+    white-space: nowrap;
+    width: 520px;
+    text-align: center;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.scale-description {
+    position: absolute;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.6;
+    width: 320px;
+    left: 50%;
+    top: 50%;
+    text-align: center;
+    transform: translate(-50%, -50%);
+}

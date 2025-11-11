@@ -1,0 +1,13 @@
+/* 隐藏水平滚动条 */
+
+.auto-scroll-list::-webkit-scrollbar {
+    height: 0;
+}
+
+.auto-scroll-list {
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    overflow-y: hidden;
+}

@@ -1,0 +1,40 @@
+.screen4 {
+    padding-top: 120px;
+    padding-left: 100px;
+    padding-right: 100px;
+    padding-bottom: 120px;
+    color: #fff;
+    position: relative;
+}
+
+.blur-text-4 {
+    font-size: 90px;
+    line-height: 108px;
+    color: #000;
+}
+
+
+/* 进度条样式 */
+
+.progress-bar-container {
+    position: absolute;
+    bottom: 80px;
+    left: 100px;
+    right: 100px;
+    z-index: 10;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 2px;
+    background: #D9D9D9;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: #0ABAB5;
+    border-radius: 2px;
+    /* 移除过渡动画，让进度条跟随滚动瞬时更新，避免重置时的顿挫感 */
+}

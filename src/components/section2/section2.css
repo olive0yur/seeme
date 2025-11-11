@@ -1,0 +1,74 @@
+.screen2 {
+    padding: 120px 100px;
+    color: #000;
+}
+
+.blur-text-2 {
+    font-size: 90px;
+    line-height: 108px;
+    color: #000;
+}
+
+.grid-content {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    gap: 53px;
+}
+
+.icon-box {
+    height: 56px;
+    width: 56px;
+    border-radius: 12px;
+    background: #E9E9E9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-label {
+    font-size: 24px;
+    line-height: 24px;
+    color: #000;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.icon-desc {
+    color: rgba(0, 0, 0, 0.70);
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+@media screen and (max-width: 1670px) {
+    .blur-text-2 {
+        font-size: 64px;
+        line-height: 76px;
+    }
+}
+
+@media screen and (max-width: 1250px) {
+    .blur-text-2 {
+        font-size: 44px;
+        line-height: 56px;
+    }
+}
+
+@media screen and (max-width: 930px) {
+    .blur-text-2 {
+        font-size: 30px;
+        line-height: 42px;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .blur-text-2 {
+        font-size: 25px;
+        line-height: 37px;
+    }
+    .screen2 {
+        padding: 100px 40px;
+    }
+}
