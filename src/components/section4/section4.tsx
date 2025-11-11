@@ -10,25 +10,25 @@ const cardList = [
   {
     id: 1,
     title: "Celebrity Portraits",
-    url: "/section4/p1.jpg",
+    url: "https://static.onew.design/see-p1.jpg",
     description: "For celebrity photographers and retouch studios enhancing publicity portraits with natural, high-fidelity skin detail.",
   },
   {
     id: 2,
     title: "Magazine Covers & Editorials",
-    url: "/section4/p2.jpg",
+    url: "https://static.onew.design/see-p2.jpg",
     description: "For editorial teams producing fashion stories and cover features — ensuring tonal harmony and authentic texture across spreads.",
   },
   {
     id: 3,
     title: "Fashion & Luxury Campaigns",
-    url: "/section4/p3.jpg",
+    url: "https://static.onew.design/see-p3.jpg",
     description: "For fashion photographers and creative agencies creating lookbooks or luxury brand visuals with consistent lighting and style.",
   },
   {
     id: 4,
     title: "Red Carpet & Event Photography",  
-    url: "/section4/p4.jpg",
+    url: "https://static.onew.design/see-p4.jpg",
     description: "For photographers capturing live celebrity moments under complex lighting, achieving clarity, balance, and visual realism.",
   },
 ];
@@ -36,7 +36,7 @@ const cardList = [
 export default function Section4({ showProgress = true }: { showProgress?: boolean }) {
   const [scrollProgress, setScrollProgress] = useState(0);
   return <div>
-    <div className="screen4 h-screen bg-[#F1F1F1]">
+    <div className="screen4 h-screen bg-[#F1F1F1] bg-cover bg-center">
       {/* 第一部分 */}
       <div className="whitespace-nowrap mb-[40px]">
         <BlurText

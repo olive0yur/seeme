@@ -4,7 +4,7 @@ import CountUp from "../ui/CountUp";
 
 export default function Section5() {
   return <div>
-    <div className="screen5 h-screen relative">
+    <div className="screen5 h-screen relative bg-[url('https://static.onew.design/see-cover.png')]">
       {/* 第一部分 */}
       <div> 
         <BlurText

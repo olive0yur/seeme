@@ -5,7 +5,7 @@ import BlurText from "../ui/BlurText";
 import "./section1.css";
 
 export default function Section1() {
-  return <div className="lg:h-screen screen h-screen bg-[url('/section1/origin.png')] bg-cover bg-center flex flex-col justify-between relative">
+  return <div className="lg:h-screen screen h-screen bg-[url('https://static.onew.design/see-origin.png')] bg-cover bg-center flex flex-col justify-between relative">
     {/* 第一节 */}
     <div className="flex justify-between items-center">
       <Image src="/section1/seeme.svg" alt="logo" width={157} height={29.897} />

@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Section7() {
   return (
-    <div className="screen7 h-screen bg-[url('/section7/cover.png')] bg-cover bg-center">
+    <div className="screen7 h-screen bg-[url('https://static.onew.design/see-cover-7.png')] bg-cover bg-center">
       {/* 第一部分 */}
       <div>
         <BlurText
