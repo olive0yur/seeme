@@ -56,9 +56,9 @@
 }
 
 @media screen and (max-height: 1080px) {
-    .screen6 {
-        padding: 80px 100px 40px 100px;
-    }
+    /* .screen6 {
+        padding: 80px 100px 80px 100px;
+    } */
     .description-6-content {
         p {
             font-size: 24px;
@@ -68,5 +68,14 @@
     .card-box-1 {
         width: 300px;
         height: 248px;
+    }
+}
+
+@media screen and (max-width: 1300px) {
+    .description-6>div {
+        width: 70%;
+    }
+    .screen6 {
+        padding: 120px 100px 120px 100px;
     }
 }
