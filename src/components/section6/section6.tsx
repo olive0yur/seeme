@@ -38,7 +38,7 @@ const cardList = [
 ];
 
 export default function Section6() {
-  return <div className="screen6 h-screen bg-[#F1F1F1] relative">
+  return <div className="screen6 bg-[#F1F1F1] relative">
     {/* 第一节 */}
     <div>
       <BlurText
@@ -51,7 +51,7 @@ export default function Section6() {
     </div>
 
     {/* 第二节 */}
-    <div className="description-6-content">
+    <div className="description-6-content mt-[80px]">
       <div className="description-6">
         <div className="flex flex-col">
           <p>
@@ -66,7 +66,7 @@ export default function Section6() {
     </div>
 
     {/* 第三节 */}
-    <div className="card-list-container">
+    <div className="card-list-container mt-[80px]">
       <AutoScrollList
         speed={30}
         step={1}

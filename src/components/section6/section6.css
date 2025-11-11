@@ -42,23 +42,7 @@
     width: 50%;
 }
 
-.description-6 p {
-    margin: 0;
-}
-
-.card-list-container {
-    /* position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 300px;
-    overflow: hidden; */
-}
-
 @media screen and (max-height: 1080px) {
-    /* .screen6 {
-        padding: 80px 100px 80px 100px;
-    } */
     .description-6-content {
         p {
             font-size: 24px;

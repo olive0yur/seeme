@@ -36,7 +36,7 @@ const cardList = [
 export default function Section4({ showProgress = true }: { showProgress?: boolean }) {
   const [scrollProgress, setScrollProgress] = useState(0);
   return <div>
-    <div className="screen4 h-screen bg-[#F1F1F1] bg-cover bg-center">
+    <div className="screen4 bg-[#F1F1F1] bg-cover bg-center">
       {/* 第一部分 */}
       <div className="whitespace-nowrap mb-[40px]">
         <BlurText
