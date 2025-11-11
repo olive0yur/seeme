@@ -23,7 +23,7 @@ export default function Section2() {
     </div>
 
     {/* 第二部分 */}
-    <div className="w-full px-[80px] pt-[80px] mt-[80px] bg-[#e4e4e4]">
+    <div className="w-full px-[80px] pt-[80px] mt-[80px] bg-[#e4e4e4] rounded-t-[24px]">
       <div className="bg-[url('https://static.onew.design/see-tool-7.png')] bg-contain bg-center bg-no-repeat aspect-[1720/654]">
         {/* <Image src="https://static.onew.design/see-tool.png" alt="section2-1" width={1720} height={1000} className="w-full h-auto" /> */}
       </div>
