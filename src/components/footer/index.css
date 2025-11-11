@@ -1,3 +1,118 @@
 .footer {
     padding: 40px 100px 19px 100px;
 }
+
+.footer-first {
+    display: flex;
+}
+
+.footer-mark {
+    display: flex;
+    flex-direction: column;
+    div {
+        white-space: nowrap;
+    }
+}
+
+.footer-right {
+    margin-left: 150px;
+}
+
+.footer-mid {
+    margin-left: 174px;
+}
+
+.footer-final {
+    margin-left: 202px;
+    display: flex;
+}
+
+.footer-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 40px;
+}
+
+.footer-box-title {
+    color: #999;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 14px;
+    margin-bottom: 8px;
+    white-space: nowrap;
+}
+
+.footer-box-item {
+    color: #FFF;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.footer-box-item:hover {
+    color: #0ABAB5;
+}
+
+@media screen and (max-width: 1600px) {
+    .footer-mid {
+        margin-left: 80px;
+    }
+    .footer-final {
+        margin-left: 100px;
+    }
+    .footer-right {
+        margin-left: 80px;
+    }
+}
+
+@media screen and (max-width: 1300px) {
+    .footer-mid {
+        margin-left: 80px;
+    }
+    .footer-final {
+        margin-left: 100px;
+    }
+    .footer-right {
+        margin-left: 80px;
+    }
+}
+
+
+/* 锐利的边框样式 */
+
+.send-button {
+    color: white;
+    cursor: pointer;
+    /* 使用多种方法确保边框锐利 */
+    border: 1px solid white;
+    /* 强制硬件加速和锐利渲染 */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* 确保像素对齐 */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    /* 防止模糊 */
+    will-change: transform;
+    /* 确保边框不被缩放影响 */
+    box-sizing: border-box;
+}
+
+.send-button:hover {
+    border-color: #0ABAB5;
+    color: #0ABAB5;
+}
+
+@media screen and (max-width: 1255px) {
+    .footer-first {
+        flex-direction: column;
+    }
+    .footer-final {
+        margin-left: 0;
+        margin-top: 100px;
+    }
+}

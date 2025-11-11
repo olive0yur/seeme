@@ -44,3 +44,15 @@
         transform: translate(0, 0);
     }
 }
+
+@media screen and (max-width: 1600px) {
+    .blur-text-7 {
+        font-size: 64px;
+        line-height: 76px;
+    }
+    .description-7 {
+        font-size: 32px;
+        line-height: 48px;
+        width: 55%;
+    }
+}

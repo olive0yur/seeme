@@ -42,7 +42,7 @@ export default function Section6() {
     {/* 第一节 */}
     <div>
       <BlurText
-        text="Loved by users"
+        text="Loved By Users"
         delay={150}
         animateBy="words"
         direction="top"

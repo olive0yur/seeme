@@ -13,10 +13,6 @@
     color: #000;
 }
 
-.description-6-content {
-    /* margin-top: 80px; */
-}
-
 .avatar-6 {
     display: flex;
     gap: 15px;
@@ -61,7 +57,7 @@
 
 @media screen and (max-height: 1080px) {
     .screen6 {
-        padding: 80px 100px;
+        padding: 80px 100px 40px 100px;
     }
     .description-6-content {
         p {

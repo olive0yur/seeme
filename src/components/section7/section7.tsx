@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Section7() {
   return (
-    <div className="screen7 h-screen bg-[url('https://static.onew.design/see-cover-7.png')] bg-cover bg-center">
+    <div className="screen7 h-screen bg-[url('https://static.onew.design/see-7-cover.png')] bg-cover bg-center">
       {/* 第一部分 */}
       <div>
         <BlurText
@@ -15,7 +15,7 @@ export default function Section7() {
           className="blur-text-7"
         />
         <BlurText
-          text="be your work partner"
+          text="Be Your Work Partner"
           delay={150}
           animateBy="words"
           direction="top"

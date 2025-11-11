@@ -7,14 +7,14 @@ export default function Section2() {
     {/* 第一部分 */}
     <div className="whitespace-nowrap">
       <BlurText
-          text="Retouching is not 'Skin smoothing',"
+          text="Retouching Is Not 'Skin Smoothing',"
           delay={150}
           animateBy="words"
           direction="top"
           className="blur-text-2"
         />
          <BlurText
-          text="but 'The art of preserving real texture'."
+          text="But 'The Art Of Preserving Real Texture'."
           delay={150}
           animateBy="words"
           direction="top"
