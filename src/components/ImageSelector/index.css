@@ -1,0 +1,102 @@
+.image-selector {
+    height: 72px;
+    position: absolute;
+    top: 65px;
+    left: 50%;
+    transform: translateX(-50%);
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #EEE;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    z-index: 10;
+}
+
+.image-selector .add-but {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    aspect-ratio: 1/1;
+    border-radius: 8px;
+    background: #FFF;
+    font-size: 34px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+}
+
+.image-selector .add-but:hover {
+    scale: 1.05;
+    transition: all 0.3s ease;
+}
+
+.image-selector .divider-line {
+    width: 20px;
+    height: 3px;
+    transform: rotate(90deg);
+    flex-shrink: 0;
+    background: #D4D4D5;
+}
+
+.image-selector .image-list {
+    display: flex;
+    gap: 10px;
+}
+
+.image-selector .image-item {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    background: #FFF;
+    position: relative;
+}
+
+.image-selector .image-item .minus {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 12px;
+    height: 12px;
+    background: #9a9a9a;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-selector .image-item .minus:hover {
+    background: #7a7a7a;
+    scale: 1.1;
+    transition: all 0.3s ease;
+}
+
+.image-selector .image-item .image-item-index {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #000;
+    height: 14px;
+    width: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.30);
+    backdrop-filter: blur(2px);
+    color: #fff;
+}
+
+.image-selector .image-item .image-item-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    cursor: pointer;
+    object-fit: contain;
+}

@@ -1,0 +1,230 @@
+.screen-dashboard {
+    background-color: #f3f3f3;
+}
+
+
+/* 新增的组件容器样式 */
+
+.main-image-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.head-dashboard {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    padding: 48px 40px 48px 100px;
+}
+
+.upload-area-container {
+    height: 100dvh;
+    width: 100dvw;
+    background-color: white;
+}
+
+.upload-area {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 420px;
+    height: 462px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: #F5F5F5;
+}
+
+.upload-area-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-left: 50px;
+    padding-right: 50px;
+    margin-top: -40px;
+    h1 {
+        color: #000;
+        font-size: 48px;
+        font-weight: 400;
+        line-height: 48px;
+        margin-bottom: 16px;
+    }
+    p {
+        color: #939393;
+        text-align: center;
+        font-family: Inter;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 20px;
+        /* 125% */
+    }
+}
+
+.upload-after-container {
+    display: flex;
+    height: 100dvh;
+    width: 100dvw;
+    .image-modify-area {
+        position: relative;
+        flex: 1;
+        background-color: white;
+        border-radius: 10px;
+        margin-top: 4px;
+        margin-left: 4px;
+        margin-bottom: 4px;
+        .ai-dialog {
+            width: calc(100% - 129px);
+            position: absolute;
+            bottom: 36px;
+            border-radius: 12px;
+            border: 1px solid #E3E4E8;
+            background: #FCFCFC;
+            box-shadow: 0 7px 21px 0 rgba(51, 51, 51, 0.16);
+            height: 84px;
+            border: none;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            max-width: 1501px;
+            margin-left: 113px;
+            margin-right: 16px;
+            display: flex;
+            z-index: 10;
+            .ai-dialog-input {
+                width: 100%;
+                border: none;
+                outline: none;
+            }
+            button {
+                cursor: pointer;
+            }
+            .ai-dialog-voice-button {
+                flex-shrink: 0;
+            }
+            .ai-dialog-button {
+                width: 48px;
+                height: 48px;
+                flex-shrink: 0;
+                border-radius: 48px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #efefef;
+            }
+            .ai-dialog-button-active {
+                background-color: #0ABAB5;
+            }
+        }
+    }
+    .right-box {
+        width: 282px;
+        margin-left: 4px;
+        margin-top: 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        box-sizing: border-box;
+        .right-preview {
+            width: 282px;
+            height: 256px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            background: #FFF;
+        }
+        .right-settings {
+            flex: 1;
+            border-radius: 10px 10px 0 0;
+            background: #FFF;
+            padding: 20px 12px 0px;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            min-height: 0;
+            .settings-box {
+                flex: 1;
+                border-radius: 10px;
+                background: #FFF;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                min-height: 0;
+            }
+            .settings-box-title {
+                color: #000;
+                font-size: 16px;
+                height: 20px;
+                font-style: normal;
+                font-weight: 600;
+                line-height: 20px;
+                margin-bottom: 16px;
+                flex-shrink: 0;
+                display: flex;
+                gap: 4px;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+            }
+            .settings-collapse-arrow {
+                transition: transform 0.2s ease;
+                transform: rotate(0deg);
+            }
+            .settings-collapse-arrow.collapsed {
+                transform: rotate(180deg);
+            }
+            .settings-panels {
+                flex: 1;
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding-right: 8px;
+                min-height: 0;
+                scroll-behavior: auto;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
+            }
+            /* 自定义滚动条样式 */
+            .settings-panels::-webkit-scrollbar {
+                width: 6px;
+            }
+            .settings-panels::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 3px;
+            }
+            .settings-panels::-webkit-scrollbar-thumb {
+                background: #c1c1c1;
+                border-radius: 3px;
+            }
+            .settings-panels::-webkit-scrollbar-thumb:hover {
+                background: #a8a8a8;
+            }
+            .download-button {
+                width: 100%;
+                height: 48px;
+                flex-shrink: 0;
+                border-radius: 10px;
+                background: #FFF;
+                margin-bottom: 60px;
+                button {
+                    width: 258px;
+                    height: 60px;
+                    flex-shrink: 0;
+                    border-radius: 12px;
+                    background: #EFF0F2;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+        }
+    }
+}

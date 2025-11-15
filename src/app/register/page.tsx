@@ -1,29 +1,26 @@
 'use client';
 
 import { useState } from 'react';
-import './login.css';
+import './register.css';
 import { useRouter } from 'next/navigation';
-import SuccessModal from '../../components/SuccessModal';
 
 export default function Login() {
   const router = useRouter();
 
-  const goToRegister = () => {
-    router.push('/register');
+  const goToLogin = () => {
+    router.push('/login');
   }
 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    invitationCode: ''
+    companyName: ''
   });
   const [errors, setErrors] = useState({
     name: '',
     email: '',
-    invitationCode: ''
+    companyName: ''
   });
-
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // 邮箱验证正则
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -48,12 +45,12 @@ export default function Login() {
     return '';
   };
 
-  const validateInvitationCode = (code: string) => {
+  const validateCompanyName = (code: string) => {
     if (!code) {
-      return 'Invitation code cannot be empty';
+      return 'Company name cannot be empty';
     }
     if (code.length < 6) {
-      return 'Invitation code must be at least 6 characters';
+      return 'Company name must be at least 6 characters';
     }
     return '';
   };
@@ -71,7 +68,7 @@ export default function Login() {
         error = validateName(value);
         break;
       case 'invitationCode':
-        error = validateInvitationCode(value);
+        error = validateCompanyName(value);
         break;
     }
     
@@ -84,20 +81,19 @@ export default function Login() {
     // 验证所有字段
     const nameError = validateName(formData.name);
     const emailError = validateEmail(formData.email);
-    const codeError = validateInvitationCode(formData.invitationCode);
+    const companyNameError = validateCompanyName(formData.companyName);
     
     setErrors({
       name: nameError,
       email: emailError,
-      invitationCode: codeError
+      companyName: companyNameError
     });
 
     // 如果没有错误，提交表单
-    if (!nameError && !emailError && !codeError) {
+    if (!nameError && !emailError && !companyNameError) {
       console.log('表单提交:', formData);
       // 这里可以调用API提交数据
-      setShowSuccessModal(true);
-      router.push('/dashboard');
+      alert('验证通过！');
     }
   };
 
@@ -105,7 +101,7 @@ export default function Login() {
     <div className="login h-screen bg-[url('https://static.onew.design/see-origin.png')]">
       <div className="loginForm-container">
         <div className='loginForm'>
-          <div className='login-title'>Nice to see you again</div>
+          <div className='login-title'>Get started Now</div>
           <form className='login-form' onSubmit={handleSubmit}>
             <div className='input-item'>
               <span>Name</span>
@@ -132,15 +128,15 @@ export default function Login() {
             </div>
 
             <div className='input-item'>
-              <span>Invitation Code</span>
+              <span>Company name</span>
               <input 
                 type="text" 
-                placeholder="Enter your invitation code"
-                value={formData.invitationCode}
-                onChange={(e) => handleInputChange('invitationCode', e.target.value)}
-                className={errors.invitationCode ? 'error' : ''}
+                placeholder="Enter your company name"
+                value={formData.companyName}
+                onChange={(e) => handleInputChange('companyName', e.target.value)}
+                className={errors.companyName ? 'error' : ''}
               />
-              {errors.invitationCode && <div className="error-message">{errors.invitationCode}</div>}
+              {errors.companyName && <div className="error-message">{errors.companyName}</div>}
             </div>
 
             <button type="submit" className="submit-btn">
@@ -149,17 +145,10 @@ export default function Login() {
           </form>
           <div className='login-footer'>
             <span>No invitation code yet？</span>
-            <span onClick={goToRegister} className='register-link'>Register</span>
+            <span onClick={goToLogin} className='register-link'>Log In</span>
           </div>
         </div>
       </div>
-      
-      <SuccessModal
-        isVisible={showSuccessModal}
-        title="You're on the list!"
-        description="We are sending out invitations in batches. Your invitation code is expected to arrive within 3 days! Please stay tuned!"
-        onClose={() => setShowSuccessModal(false)}
-      />
     </div>
   );
 }
