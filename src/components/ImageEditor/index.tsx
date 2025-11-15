@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useState, useRef, useCallback, useEffect } from 'react';
+import PixiImageRenderer from '../PixiImageRenderer';
 import './index.css';
 
 interface ImageFile {
@@ -27,6 +28,9 @@ interface ImageSettings {
 interface ImageEditorProps {
   image: ImageFile | null;
   settings?: ImageSettings;
+  transform?: Transform;
+  onTransformChange?: (transform: Transform) => void;
+  onZoomChange?: (zoomPercentage: number) => void;
   className?: string;
 }
 
@@ -36,74 +40,66 @@ interface Transform {
   scale: number;
 }
 
-// 生成CSS滤镜字符串的函数
-const generateFilterStyle = (settings: ImageSettings): string => {
-  const filters = [];
-  
-  // Basic Panel 效果
-  if (settings.exposure !== 0) {
-    filters.push(`brightness(${100 + settings.exposure}%)`);
-  }
-  
-  if (settings.highlights !== 0) {
-    filters.push(`contrast(${100 - settings.highlights * 0.3}%)`);
-  }
-  
-  if (settings.shadows !== 0) {
-    const shadowBrightness = 100 + settings.shadows * 0.5;
-    filters.push(`brightness(${shadowBrightness}%)`);
-  }
-  
-  if (settings.whites !== 0) {
-    filters.push(`brightness(${100 + settings.whites * 0.8}%)`);
-  }
-  
-  if (settings.blacks !== 0) {
-    filters.push(`contrast(${100 + settings.blacks}%)`);
-  }
-  
-  // Color Panel 效果
-  if (settings.temperature !== 0) {
-    filters.push(`hue-rotate(${settings.temperature * 0.5}deg)`);
-  }
-  
-  if (settings.tint !== 0) {
-    filters.push(`hue-rotate(${settings.tint * 0.3}deg)`);
-  }
-  
-  if (settings.saturation !== 0) {
-    filters.push(`saturate(${100 + settings.saturation}%)`);
-  }
-  
-  // Effects Panel 效果
-  if (settings.texture !== 0) {
-    const sharpness = 1 + (settings.texture / 100);
-    filters.push(`contrast(${100 * sharpness}%)`);
-  }
-  
-  if (settings.clarity !== 0) {
-    filters.push(`contrast(${100 + settings.clarity}%)`);
-  }
-  
-  if (settings.grain !== 0) {
-    const blur = settings.grain * 0.01;
-    filters.push(`blur(${blur}px)`);
-    filters.push(`contrast(${100 + settings.grain * 0.5}%)`);
-  }
-  
-  return filters.length > 0 ? filters.join(' ') : 'none';
+const defaultSettings: ImageSettings = {
+  exposure: 0,
+  highlights: 0,
+  shadows: 0,
+  whites: 0,
+  blacks: 0,
+  temperature: 0,
+  tint: 0,
+  saturation: 0,
+  texture: 0,
+  clarity: 0,
+  grain: 0
 };
 
-export default function ImageEditor({ image, settings, className = '' }: ImageEditorProps) {
-  const [transform, setTransform] = useState<Transform>({ x: 0, y: 0, scale: 1 });
+export default function ImageEditor({ 
+  image, 
+  settings = defaultSettings, 
+  transform: externalTransform = { x: 0, y: 0, scale: 1 },
+  onTransformChange,
+  onZoomChange,
+  className = '' 
+}: ImageEditorProps) {
+  const [transform, setTransform] = useState<Transform>(externalTransform);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [containerSize, setContainerSize] = useState({ width: 800, height: 600 });
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // 重置变换当图片改变时
+  // 获取容器尺寸
   useEffect(() => {
-    setTransform({ x: 0, y: 0, scale: 1 });
-  }, [image?.id]);
+    if (!containerRef.current) return;
+    
+    const updateSize = () => {
+      if (containerRef.current) {
+        setContainerSize({
+          width: containerRef.current.clientWidth,
+          height: containerRef.current.clientHeight
+        });
+      }
+    };
+    
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+
+  // 当外部传入的变换状态改变时，更新内部状态
+  useEffect(() => {
+    setTransform(externalTransform);
+    onZoomChange?.(externalTransform.scale * 100);
+  }, [externalTransform, onZoomChange]);
+
+  // 当图片改变时，如果没有外部变换状态，则重置变换
+  useEffect(() => {
+    if (!externalTransform || (externalTransform.x === 0 && externalTransform.y === 0 && externalTransform.scale === 1)) {
+      setTransform({ x: 0, y: 0, scale: 1 });
+      onZoomChange?.(100);
+    }
+  }, [image?.id, externalTransform, onZoomChange]);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (!image) return;
@@ -118,29 +114,47 @@ export default function ImageEditor({ image, settings, className = '' }: ImageEd
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!isDragging || !image) return;
 
-    setTransform(prev => ({
-      ...prev,
+    const newTransform = {
+      ...transform,
       x: e.clientX - dragStart.x,
       y: e.clientY - dragStart.y
-    }));
-  }, [isDragging, dragStart, image]);
+    };
+    
+    setTransform(newTransform);
+    onTransformChange?.(newTransform);
+  }, [isDragging, dragStart, image, transform, onTransformChange]);
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
   }, []);
 
-  const handleWheel = useCallback((e: React.WheelEvent) => {
-    if (!image) return;
-    
-    e.preventDefault();
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    const newScale = Math.max(0.1, Math.min(5, transform.scale * delta));
-    
-    setTransform(prev => ({
-      ...prev,
-      scale: newScale
-    }));
-  }, [image, transform.scale]);
+  // 使用原生事件监听器处理滚轮缩放
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !image) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? 0.9 : 1.1;
+      
+      setTransform(prev => {
+        const newScale = Math.max(0.1, Math.min(5, prev.scale * delta));
+        const newTransform = {
+          ...prev,
+          scale: newScale
+        };
+        onTransformChange?.(newTransform);
+        onZoomChange?.(newScale * 100);
+        return newTransform;
+      });
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
+  }, [image, onTransformChange]);
 
   if (!image) {
     return (
@@ -164,32 +178,16 @@ export default function ImageEditor({ image, settings, className = '' }: ImageEd
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        onWheel={handleWheel}
         style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
       >
-        <div
-          className="image-editor-image-container"
-          style={{
-            transform: `translate(calc(-50% + ${transform.x}px), calc(-50% + ${transform.y}px)) scale(${transform.scale})`,
-            transformOrigin: 'center center'
-          }}
-        >
-          <Image
-            src={image.url}
-            alt="editing"
-            width={500}
-            height={500}
-            style={{ 
-              objectFit: 'contain',
-              maxWidth: '100%',
-              height: 'auto',
-              userSelect: 'none',
-              pointerEvents: 'none',
-              filter: settings ? generateFilterStyle(settings) : 'none'
-            }}
-            draggable={false}
-          />
-        </div>
+        <PixiImageRenderer 
+          key={image.id}
+          imageUrl={image.url}
+          settings={settings}
+          width={containerSize.width}
+          height={containerSize.height}
+          transform={transform}
+        />
       </div>
     </div>
   );

@@ -49,8 +49,17 @@ export default function Dashboard() {
   const [settingsCollapsed, setSettingsCollapsed] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  // 图片设置状态
-  const [imageSettings, setImageSettings] = useState<ImageSettings>({
+  // 缩放相关状态
+  const [zoomPercentage, setZoomPercentage] = useState(100);
+  
+  // 图标按钮状态 - trans和two，初始状态都为灰色
+  const [iconStates, setIconStates] = useState({
+    trans: false,
+    two: false
+  });
+  
+  // 默认设置
+  const defaultSettings: ImageSettings = {
     exposure: 0,
     highlights: 0,
     shadows: 0,
@@ -62,7 +71,23 @@ export default function Dashboard() {
     texture: 0,
     clarity: 0,
     grain: 0
-  });
+  };
+  
+  // 为每张图片保存独立的设置
+  const imageSettingsMapRef = useRef<Record<string, ImageSettings>>({});
+  const [imageSettingsMap, setImageSettingsMap] = useState<Record<string, ImageSettings>>({});
+  
+  // 当前图片的设置
+  const [imageSettings, setImageSettings] = useState<ImageSettings>(defaultSettings);
+
+  // 更新设置映射的辅助函数
+  const updateSettingsMap = (id: string, settings: ImageSettings) => {
+    imageSettingsMapRef.current = {
+      ...imageSettingsMapRef.current,
+      [id]: settings
+    };
+    setImageSettingsMap(imageSettingsMapRef.current);
+  };
 
   const images = [
   "https://static.onew.design/layer1.png",
@@ -101,7 +126,24 @@ const transformStyles = [
 
   // 处理图片选择
   const handleImageSelect = (imageId: string) => {
+    // 如果选择的是同一张图片，不做任何操作
+    if (selectedImageId === imageId) return;
+    
+    // 保存当前图片的设置
+    if (selectedImageId) {
+      updateSettingsMap(selectedImageId, imageSettings);
+    }
+    
+    // 切换到新图片
     setSelectedImageId(imageId);
+    
+    // 恢复新图片的设置
+    const savedSettings = imageSettingsMapRef.current[imageId];
+    if (savedSettings) {
+      setImageSettings(savedSettings);
+    } else {
+      setImageSettings({ ...defaultSettings });
+    }
   };
 
   // 处理图片删除
@@ -109,11 +151,24 @@ const transformStyles = [
     setUploadedImages((prev: ImageFile[]) => {
       const filtered = prev.filter(img => img.id !== imageId);
       
+      // 删除该图片的设置
+      delete imageSettingsMapRef.current[imageId];
+      setImageSettingsMap({ ...imageSettingsMapRef.current });
+      
       // 如果删除的是当前选中的图片，选择下一张
       if (selectedImageId === imageId) {
         const currentIndex = prev.findIndex(img => img.id === imageId);
         const nextImage = filtered[currentIndex] || filtered[currentIndex - 1] || null;
-        setSelectedImageId(nextImage?.id || null);
+        
+        if (nextImage) {
+          setSelectedImageId(nextImage.id);
+          // 恢复下一张图片的设置
+          const savedSettings = imageSettingsMapRef.current[nextImage.id];
+          setImageSettings(savedSettings || defaultSettings);
+        } else {
+          setSelectedImageId(null);
+          setImageSettings(defaultSettings);
+        }
       }
       
       // 如果没有图片了，回到上传界面
@@ -154,40 +209,79 @@ const transformStyles = [
 
   // 处理设置变化
   const handleBasicSettingsChange = (basicSettings: Partial<ImageSettings>) => {
-    setImageSettings((prev: ImageSettings) => ({
-      ...prev,
-      ...basicSettings
-    }));
+    setImageSettings((prev: ImageSettings) => {
+      const newSettings = {
+        ...prev,
+        ...basicSettings
+      };
+      // 实时保存到 map
+      if (selectedImageId) {
+        updateSettingsMap(selectedImageId, newSettings);
+      }
+      return newSettings;
+    });
   };
 
   const handleColorSettingsChange = (colorSettings: Partial<ImageSettings>) => {
-    setImageSettings((prev: ImageSettings) => ({
-      ...prev,
-      ...colorSettings
-    }));
+    setImageSettings((prev: ImageSettings) => {
+      const newSettings = {
+        ...prev,
+        ...colorSettings
+      };
+      // 实时保存到 map
+      if (selectedImageId) {
+        updateSettingsMap(selectedImageId, newSettings);
+      }
+      return newSettings;
+    });
   };
 
   const handleEffectsSettingsChange = (effectsSettings: Partial<ImageSettings>) => {
-    setImageSettings((prev: ImageSettings) => ({
-      ...prev,
-      ...effectsSettings
-    }));
+    setImageSettings((prev: ImageSettings) => {
+      const newSettings = {
+        ...prev,
+        ...effectsSettings
+      };
+      // 实时保存到 map
+      if (selectedImageId) {
+        updateSettingsMap(selectedImageId, newSettings);
+      }
+      return newSettings;
+    });
   };
 
   // 重置图片设置
   const handleResetSettings = () => {
-    setImageSettings({
-      exposure: 0,
-      highlights: 0,
-      shadows: 0,
-      whites: 0,
-      blacks: 0,
-      temperature: 0,
-      tint: 0,
-      saturation: 0,
-      texture: 0,
-      clarity: 0,
-      grain: 0
+    setImageSettings(defaultSettings);
+    
+    // 同时清除保存的设置
+    if (selectedImageId) {
+      delete imageSettingsMapRef.current[selectedImageId];
+      setImageSettingsMap({ ...imageSettingsMapRef.current });
+    }
+  };
+
+  // 处理图标按钮点击
+  const handleIconClick = (iconType: 'trans' | 'two') => {
+    setIconStates(prev => {
+      const newStates = { ...prev };
+      
+      // 如果点击的图标当前是激活状态，可以取消激活（允许两个都为灰色）
+      if (prev[iconType]) {
+        newStates[iconType] = false;
+      } else {
+        // 如果点击的图标当前是非激活状态，则激活它
+        newStates[iconType] = true;
+      }
+      
+      // 但是不允许两个同时都为黑色（激活状态）
+      if (newStates.trans && newStates.two) {
+        // 如果两个都要激活，则取消另一个的激活状态
+        const otherIcon = iconType === 'trans' ? 'two' : 'trans';
+        newStates[otherIcon] = false;
+      }
+      
+      return newStates;
     });
   };
 
@@ -252,6 +346,7 @@ const transformStyles = [
             <ImageSelector
               images={uploadedImages}
               selectedImageId={selectedImageId}
+              imageSettingsMap={imageSettingsMap}
               onImageSelect={handleImageSelect}
               onImageRemove={handleImageRemove}
               onAddImages={handleAddMoreImages}
@@ -263,7 +358,39 @@ const transformStyles = [
             <ImageEditor 
               image={selectedImage} 
               settings={imageSettings}
+              onZoomChange={setZoomPercentage}
             />
+            
+            {/* 缩放百分比显示 */}
+            <div className='zoom-percentage-display'>
+              {Math.round(zoomPercentage)}%
+            </div>
+            
+            {/* 图标按钮区域 */}
+            <div className='icon-buttons-area'>
+              <button 
+                className='icon-button'
+                onClick={() => handleIconClick('trans')}
+              >
+                <Image 
+                  src={iconStates.trans ? "/trans-b.svg" : "/trans.svg"} 
+                  alt="trans" 
+                  width={16} 
+                  height={16} 
+                />
+              </button>
+              <button 
+                className='icon-button'
+                onClick={() => handleIconClick('two')}
+              >
+                <Image 
+                  src={iconStates.two ? "/two-b.svg" : "/two.svg"} 
+                  alt="two" 
+                  width={16} 
+                  height={16} 
+                />
+              </button>
+            </div>
           </div>
           
           {/* ai对话框 */}
@@ -292,7 +419,7 @@ const transformStyles = [
         {/* 右侧框 */}
         <div className='right-box'>
           <div className='right-preview'>
-            <ImagePreview image={selectedImage} settings={imageSettings} />
+            <ImagePreview image={selectedImage} />
           </div>
 
           <div className='right-settings'>

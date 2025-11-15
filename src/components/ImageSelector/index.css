@@ -100,3 +100,11 @@
     cursor: pointer;
     object-fit: contain;
 }
+
+.image-selector .image-item .image-item-thumbnail {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    cursor: pointer;
+    overflow: hidden;
+}

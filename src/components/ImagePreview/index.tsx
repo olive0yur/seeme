@@ -1,6 +1,8 @@
 'use client';
 
 import Image from 'next/image';
+import { useEffect, useState, useRef } from 'react';
+import PixiImageRenderer from '../PixiImageRenderer';
 import './index.css';
 
 interface ImageFile {
@@ -29,65 +31,43 @@ interface ImagePreviewProps {
   className?: string;
 }
 
-// 生成CSS滤镜字符串的函数
-const generateFilterStyle = (settings: ImageSettings): string => {
-  const filters = [];
-  
-  // Basic Panel 效果
-  if (settings.exposure !== 0) {
-    filters.push(`brightness(${100 + settings.exposure}%)`);
-  }
-  
-  if (settings.highlights !== 0) {
-    filters.push(`contrast(${100 - settings.highlights * 0.3}%)`);
-  }
-  
-  if (settings.shadows !== 0) {
-    const shadowBrightness = 100 + settings.shadows * 0.5;
-    filters.push(`brightness(${shadowBrightness}%)`);
-  }
-  
-  if (settings.whites !== 0) {
-    filters.push(`brightness(${100 + settings.whites * 0.8}%)`);
-  }
-  
-  if (settings.blacks !== 0) {
-    filters.push(`contrast(${100 + settings.blacks}%)`);
-  }
-  
-  // Color Panel 效果
-  if (settings.temperature !== 0) {
-    filters.push(`hue-rotate(${settings.temperature * 0.5}deg)`);
-  }
-  
-  if (settings.tint !== 0) {
-    filters.push(`hue-rotate(${settings.tint * 0.3}deg)`);
-  }
-  
-  if (settings.saturation !== 0) {
-    filters.push(`saturate(${100 + settings.saturation}%)`);
-  }
-  
-  // Effects Panel 效果
-  if (settings.texture !== 0) {
-    const sharpness = 1 + (settings.texture / 100);
-    filters.push(`contrast(${100 * sharpness}%)`);
-  }
-  
-  if (settings.clarity !== 0) {
-    filters.push(`contrast(${100 + settings.clarity}%)`);
-  }
-  
-  if (settings.grain !== 0) {
-    const blur = settings.grain * 0.01;
-    filters.push(`blur(${blur}px)`);
-    filters.push(`contrast(${100 + settings.grain * 0.5}%)`);
-  }
-  
-  return filters.length > 0 ? filters.join(' ') : 'none';
+const defaultSettings: ImageSettings = {
+  exposure: 0,
+  highlights: 0,
+  shadows: 0,
+  whites: 0,
+  blacks: 0,
+  temperature: 0,
+  tint: 0,
+  saturation: 0,
+  texture: 0,
+  clarity: 0,
+  grain: 0
 };
 
-export default function ImagePreview({ image, settings, className = '' }: ImagePreviewProps) {
+export default function ImagePreview({ image, settings = defaultSettings, className = '' }: ImagePreviewProps) {
+  const [containerSize, setContainerSize] = useState({ width: 400, height: 300 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // 获取容器尺寸
+  useEffect(() => {
+    if (!containerRef.current) return;
+    
+    const updateSize = () => {
+      if (containerRef.current) {
+        setContainerSize({
+          width: containerRef.current.clientWidth,
+          height: containerRef.current.clientHeight
+        });
+      }
+    };
+    
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+
   if (!image) {
     return (
       <div className={`image-preview ${className}`}>
@@ -103,17 +83,15 @@ export default function ImagePreview({ image, settings, className = '' }: ImageP
 
   return (
     <div className={`image-preview ${className}`}>
-      <div className="image-preview-container">
-        <Image
+      <div ref={containerRef} className="image-preview-container">
+        <img 
           src={image.url}
-          alt="preview"
-          fill
-          sizes="(max-width: 768px) 100vw, 50vw"
-          style={{ 
-            objectFit: 'contain',
-            filter: settings ? generateFilterStyle(settings) : 'none'
+          alt="原始图片预览"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain'
           }}
-          className="preview-image"
         />
       </div>
     </div>

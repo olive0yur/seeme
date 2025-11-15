@@ -17,6 +17,61 @@
     z-index: 1;
 }
 
+
+/* 缩放百分比显示 */
+
+.zoom-percentage-display {
+    position: absolute;
+    top: 110px;
+    right: 98px;
+    width: 58px;
+    height: 28px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    background: #EEE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-size: 12px;
+    font-weight: 500;
+    z-index: 10;
+}
+
+
+/* 图标按钮区域 */
+
+.icon-buttons-area {
+    position: absolute;
+    top: 110px;
+    right: 16px;
+    width: 74px;
+    height: 28px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    background: #EEE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    z-index: 10;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: opacity 0.2s ease;
+}
+
+.icon-button:hover {
+    opacity: 0.8;
+}
+
 .head-dashboard {
     position: absolute;
     top: 0;
