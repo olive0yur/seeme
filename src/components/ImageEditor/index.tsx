@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import { useState, useRef, useCallback, useEffect } from 'react';
 import PixiImageRenderer from '../PixiImageRenderer';
+import CompareImageRenderer from '../CompareImageRenderer';
+import SwipeCompareRenderer from '../SwipeCompareRenderer';
 import './index.css';
 
 interface ImageFile {
@@ -32,6 +34,8 @@ interface ImageEditorProps {
   onTransformChange?: (transform: Transform) => void;
   onZoomChange?: (zoomPercentage: number) => void;
   className?: string;
+  viewMode?: 'single' | 'compare' | 'modified';
+  transMode?: boolean;
 }
 
 interface Transform {
@@ -54,19 +58,41 @@ const defaultSettings: ImageSettings = {
   grain: 0
 };
 
-export default function ImageEditor({ 
-  image, 
-  settings = defaultSettings, 
+export default function ImageEditor({
+  image,
+  settings = defaultSettings,
   transform: externalTransform = { x: 0, y: 0, scale: 1 },
   onTransformChange,
   onZoomChange,
-  className = '' 
+  className = '',
+  viewMode = 'single',
+  transMode = false
 }: ImageEditorProps) {
-  const [transform, setTransform] = useState<Transform>(externalTransform);
+  // 直接使用外部 transform,不需要内部状态
+  const transform = externalTransform;
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [containerSize, setContainerSize] = useState({ width: 800, height: 600 });
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // 调试：监控 settings 变化
+  useEffect(() => {
+    console.log('🖼️ ImageEditor 接收到新的 settings:', settings, 'image:', image?.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    settings.exposure,
+    settings.highlights,
+    settings.shadows,
+    settings.whites,
+    settings.blacks,
+    settings.temperature,
+    settings.tint,
+    settings.saturation,
+    settings.texture,
+    settings.clarity,
+    settings.grain,
+    image?.id
+  ]);
 
   // 获取容器尺寸
   useEffect(() => {
@@ -87,20 +113,6 @@ export default function ImageEditor({
     return () => window.removeEventListener('resize', updateSize);
   }, []);
 
-  // 当外部传入的变换状态改变时，更新内部状态
-  useEffect(() => {
-    setTransform(externalTransform);
-    onZoomChange?.(externalTransform.scale * 100);
-  }, [externalTransform, onZoomChange]);
-
-  // 当图片改变时，如果没有外部变换状态，则重置变换
-  useEffect(() => {
-    if (!externalTransform || (externalTransform.x === 0 && externalTransform.y === 0 && externalTransform.scale === 1)) {
-      setTransform({ x: 0, y: 0, scale: 1 });
-      onZoomChange?.(100);
-    }
-  }, [image?.id, externalTransform, onZoomChange]);
-
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (!image) return;
     
@@ -120,7 +132,6 @@ export default function ImageEditor({
       y: e.clientY - dragStart.y
     };
     
-    setTransform(newTransform);
     onTransformChange?.(newTransform);
   }, [isDragging, dragStart, image, transform, onTransformChange]);
 
@@ -137,16 +148,13 @@ export default function ImageEditor({
       e.preventDefault();
       const delta = e.deltaY > 0 ? 0.9 : 1.1;
       
-      setTransform(prev => {
-        const newScale = Math.max(0.1, Math.min(5, prev.scale * delta));
-        const newTransform = {
-          ...prev,
-          scale: newScale
-        };
-        onTransformChange?.(newTransform);
-        onZoomChange?.(newScale * 100);
-        return newTransform;
-      });
+      const newScale = Math.max(0.1, Math.min(5, transform.scale * delta));
+      const newTransform = {
+        ...transform,
+        scale: newScale
+      };
+      onTransformChange?.(newTransform);
+      onZoomChange?.(newScale * 100);
     };
 
     container.addEventListener('wheel', handleWheel, { passive: false });
@@ -154,7 +162,7 @@ export default function ImageEditor({
     return () => {
       container.removeEventListener('wheel', handleWheel);
     };
-  }, [image, onTransformChange]);
+  }, [image, transform, onTransformChange, onZoomChange]);
 
   if (!image) {
     return (
@@ -169,8 +177,71 @@ export default function ImageEditor({
     );
   }
 
+  // 根据视图模式渲染不同的内容
+  const renderContent = () => {
+    console.log('🎬 渲染内容 - transMode:', transMode, 'viewMode:', viewMode);
+    
+    if (transMode) {
+      // trans 模式：滑动对比，左边原图，右边修改图
+      // 确保原图使用真正的默认设置（全0值）
+      const trueOriginalSettings = {
+        exposure: 0,
+        highlights: 0,
+        shadows: 0,
+        whites: 0,
+        blacks: 0,
+        temperature: 0,
+        tint: 0,
+        saturation: 0,
+        texture: 0,
+        clarity: 0,
+        grain: 0
+      };
+
+      console.log('✅ 渲染 SwipeCompareRenderer');
+      return (
+        <SwipeCompareRenderer
+          key={`${image.id}-swipe`}
+          imageUrl={image.url}
+          originalSettings={trueOriginalSettings}
+          modifiedSettings={settings}
+          width={containerSize.width}
+          height={containerSize.height}
+          transform={transform}
+          onTransformChange={onTransformChange}
+          onZoomChange={onZoomChange}
+        />
+      );
+    } else if (viewMode === 'compare') {
+      // 对比模式：修改图和原图并排
+      return (
+        <CompareImageRenderer
+          key={`${image.id}-compare`}
+          imageUrl={image.url}
+          originalSettings={defaultSettings}
+          modifiedSettings={settings}
+          width={containerSize.width}
+          height={containerSize.height}
+          transform={transform}
+        />
+      );
+    } else {
+      // 默认模式：显示编辑后的图
+      return (
+        <PixiImageRenderer
+          key={image.id}
+          imageUrl={image.url}
+          settings={settings}
+          width={containerSize.width}
+          height={containerSize.height}
+          transform={transform}
+        />
+      );
+    }
+  };
+
   return (
-    <div className={`image-editor ${className}`}>
+    <div className={`image-editor ${className} ${viewMode === 'compare' ? 'compare-mode' : ''}`}>
       <div 
         ref={containerRef}
         className="image-editor-canvas"
@@ -180,14 +251,7 @@ export default function ImageEditor({
         onMouseLeave={handleMouseUp}
         style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
       >
-        <PixiImageRenderer 
-          key={image.id}
-          imageUrl={image.url}
-          settings={settings}
-          width={containerSize.width}
-          height={containerSize.height}
-          transform={transform}
-        />
+        {renderContent()}
       </div>
     </div>
   );

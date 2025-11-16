@@ -30,6 +30,104 @@ interface PixiImageRendererProps {
   };
 }
 
+// 应用滤镜的辅助函数
+const applyFilters = (sprite: PIXI.Sprite, settings: ImageSettings) => {
+  const colorMatrix = new PIXI.ColorMatrixFilter();
+  
+  // Basic Panel - Exposure (亮度)
+  if (settings.exposure !== 0) {
+    const exposureFactor = 1 + settings.exposure / 100;
+    colorMatrix.brightness(exposureFactor, true);
+  }
+  
+  // Highlights (对比度影响)
+  if (settings.highlights !== 0) {
+    const highlightFactor = 1 - settings.highlights * 0.003;
+    colorMatrix.contrast(highlightFactor, true);
+  }
+  
+  // Shadows (暗部亮度)
+  if (settings.shadows !== 0) {
+    const shadowAdjust = 1 + settings.shadows / 200;
+    colorMatrix.brightness(shadowAdjust, true);
+  }
+  
+  // Whites (亮部增强)
+  if (settings.whites !== 0) {
+    const whitesAdjust = 1 + settings.whites / 125;
+    colorMatrix.brightness(whitesAdjust, true);
+  }
+  
+  // Blacks (对比度)
+  if (settings.blacks !== 0) {
+    const blacksFactor = 1 + settings.blacks / 100;
+    colorMatrix.contrast(blacksFactor, true);
+  }
+  
+  // Color Panel - Saturation (饱和度)
+  if (settings.saturation !== 0) {
+    const saturationValue = 1 + settings.saturation / 100;
+    colorMatrix.saturate(saturationValue, true);
+  }
+  
+  // Temperature (色温)
+  if (settings.temperature !== 0) {
+    const tempFactor = settings.temperature / 100;
+    const matrix = colorMatrix.matrix;
+    
+    if (tempFactor > 0) {
+      // 暖色调
+      matrix[0] += tempFactor * 0.2;
+      matrix[6] += tempFactor * 0.1;
+      matrix[10] -= tempFactor * 0.2;
+    } else {
+      // 冷色调
+      matrix[0] += tempFactor * 0.2;
+      matrix[6] += tempFactor * 0.1;
+      matrix[10] -= tempFactor * 0.2;
+    }
+  }
+  
+  // Tint (色调)
+  if (settings.tint !== 0) {
+    const tintFactor = settings.tint / 100;
+    const matrix = colorMatrix.matrix;
+    
+    if (tintFactor > 0) {
+      matrix[0] += tintFactor * 0.15;
+      matrix[6] -= tintFactor * 0.2;
+      matrix[10] += tintFactor * 0.15;
+    } else {
+      matrix[0] += tintFactor * 0.15;
+      matrix[6] -= tintFactor * 0.2;
+      matrix[10] += tintFactor * 0.15;
+    }
+  }
+  
+  // Effects Panel - Texture (纹理)
+  if (settings.texture !== 0) {
+    const textureFactor = 1 + settings.texture / 100;
+    colorMatrix.contrast(textureFactor, true);
+  }
+  
+  // Clarity (清晰度)
+  if (settings.clarity !== 0) {
+    const clarityFactor = 1 + settings.clarity / 100;
+    colorMatrix.contrast(clarityFactor, true);
+  }
+  
+  const filters: PIXI.Filter[] = [colorMatrix];
+  
+  // Grain (颗粒/模糊)
+  if (settings.grain > 0) {
+    const blurFilter = new PIXI.BlurFilter();
+    blurFilter.blur = settings.grain * 0.05;
+    filters.push(blurFilter);
+  }
+  
+  sprite.filters = filters;
+};
+
 export default function PixiImageRenderer({ 
   imageUrl, 
   settings, 
@@ -103,6 +201,9 @@ export default function PixiImageRenderer({
         app.stage.addChild(sprite);
         spriteRef.current = sprite;
 
+        // 立即应用当前的图像设置
+        applyFilters(sprite, settings);
+
       } catch (error) {
         console.error('加载图片失败:', error);
       }
@@ -144,104 +245,27 @@ export default function PixiImageRenderer({
 
   // 应用图像调整效果
   useEffect(() => {
-    if (!spriteRef.current) return;
+    if (!spriteRef.current) {
+      console.log('⚠️ sprite 还未创建,跳过应用滤镜');
+      return;
+    }
 
-    const colorMatrix = new PIXI.ColorMatrixFilter();
+    console.log('🎨 应用图像设置:', settings);
+    applyFilters(spriteRef.current, settings);
     
-    // Basic Panel - Exposure (亮度)
-    if (settings.exposure !== 0) {
-      const exposureFactor = 1 + settings.exposure / 100;
-      colorMatrix.brightness(exposureFactor, true);
-    }
-    
-    // Highlights (对比度影响)
-    if (settings.highlights !== 0) {
-      const highlightFactor = 1 - settings.highlights * 0.003;
-      colorMatrix.contrast(highlightFactor, true);
-    }
-    
-    // Shadows (暗部亮度)
-    if (settings.shadows !== 0) {
-      const shadowAdjust = 1 + settings.shadows / 200;
-      colorMatrix.brightness(shadowAdjust, true);
-    }
-    
-    // Whites (亮部增强)
-    if (settings.whites !== 0) {
-      const whitesAdjust = 1 + settings.whites / 125;
-      colorMatrix.brightness(whitesAdjust, true);
-    }
-    
-    // Blacks (对比度)
-    if (settings.blacks !== 0) {
-      const blacksFactor = 1 + settings.blacks / 100;
-      colorMatrix.contrast(blacksFactor, true);
-    }
-    
-    // Color Panel - Saturation (饱和度)
-    if (settings.saturation !== 0) {
-      const saturationValue = 1 + settings.saturation / 100;
-      colorMatrix.saturate(saturationValue, true);
-    }
-    
-    // Temperature (色温)
-    if (settings.temperature !== 0) {
-      const tempFactor = settings.temperature / 100;
-      const matrix = colorMatrix.matrix;
-      
-      if (tempFactor > 0) {
-        // 暖色调
-        matrix[0] += tempFactor * 0.2;
-        matrix[6] += tempFactor * 0.1;
-        matrix[10] -= tempFactor * 0.2;
-      } else {
-        // 冷色调
-        matrix[0] += tempFactor * 0.2;
-        matrix[6] += tempFactor * 0.1;
-        matrix[10] -= tempFactor * 0.2;
-      }
-    }
-    
-    // Tint (色调)
-    if (settings.tint !== 0) {
-      const tintFactor = settings.tint / 100;
-      const matrix = colorMatrix.matrix;
-      
-      if (tintFactor > 0) {
-        matrix[0] += tintFactor * 0.15;
-        matrix[6] -= tintFactor * 0.2;
-        matrix[10] += tintFactor * 0.15;
-      } else {
-        matrix[0] += tintFactor * 0.15;
-        matrix[6] -= tintFactor * 0.2;
-        matrix[10] += tintFactor * 0.15;
-      }
-    }
-    
-    // Effects Panel - Texture (纹理)
-    if (settings.texture !== 0) {
-      const textureFactor = 1 + settings.texture / 100;
-      colorMatrix.contrast(textureFactor, true);
-    }
-    
-    // Clarity (清晰度)
-    if (settings.clarity !== 0) {
-      const clarityFactor = 1 + settings.clarity / 100;
-      colorMatrix.contrast(clarityFactor, true);
-    }
-    
-    const filters: PIXI.Filter[] = [colorMatrix];
-    
-    // Grain (颗粒/模糊)
-    if (settings.grain > 0) {
-      const blurFilter = new PIXI.BlurFilter();
-      blurFilter.blur = settings.grain * 0.05;
-      filters.push(blurFilter);
-    }
-    
-    spriteRef.current.filters = filters;
-    
-  }, [settings]);
+  }, [
+    settings.exposure,
+    settings.highlights,
+    settings.shadows,
+    settings.whites,
+    settings.blacks,
+    settings.temperature,
+    settings.tint,
+    settings.saturation,
+    settings.texture,
+    settings.clarity,
+    settings.grain
+  ]);
 
   return <div ref={containerRef} className="pixi-canvas-container" />;
 }

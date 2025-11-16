@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SettingsPanel from '../SettingsPanel';
 
 interface EffectsPanelProps {
+  currentSettings?: EffectsSettings;
   onSettingsChange?: (settings: EffectsSettings) => void;
 }
 
@@ -13,12 +14,23 @@ interface EffectsSettings {
   grain: number;
 }
 
-const EffectsPanel: React.FC<EffectsPanelProps> = ({ onSettingsChange }) => {
+const EffectsPanel: React.FC<EffectsPanelProps> = ({ currentSettings, onSettingsChange }) => {
   const [settings, setSettings] = useState<EffectsSettings>({
     texture: 0,
     clarity: 0,
     grain: 0
   });
+
+  // 当外部传入的 currentSettings 变化时,更新内部状态
+  useEffect(() => {
+    if (currentSettings) {
+      setSettings({
+        texture: currentSettings.texture,
+        clarity: currentSettings.clarity,
+        grain: currentSettings.grain
+      });
+    }
+  }, [currentSettings]);
 
   const handleItemChange = (label: string, value: number) => {
     const newSettings = {

@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SettingsPanel from '../SettingsPanel';
 
 interface BasicPanelProps {
+  currentSettings?: BasicSettings;
   onSettingsChange?: (settings: BasicSettings) => void;
 }
 
@@ -15,7 +16,7 @@ interface BasicSettings {
   blacks: number;
 }
 
-const BasicPanel: React.FC<BasicPanelProps> = ({ onSettingsChange }) => {
+const BasicPanel: React.FC<BasicPanelProps> = ({ currentSettings, onSettingsChange }) => {
   const [settings, setSettings] = useState<BasicSettings>({
     exposure: 0,
     highlights: 0,
@@ -23,6 +24,19 @@ const BasicPanel: React.FC<BasicPanelProps> = ({ onSettingsChange }) => {
     whites: 0,
     blacks: 0
   });
+
+  // 当外部传入的 currentSettings 变化时,更新内部状态
+  useEffect(() => {
+    if (currentSettings) {
+      setSettings({
+        exposure: currentSettings.exposure,
+        highlights: currentSettings.highlights,
+        shadows: currentSettings.shadows,
+        whites: currentSettings.whites,
+        blacks: currentSettings.blacks
+      });
+    }
+  }, [currentSettings]);
 
   const handleItemChange = (label: string, value: number) => {
     const newSettings = {

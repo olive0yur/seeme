@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SettingsPanel from '../SettingsPanel';
 
 interface ColorPanelProps {
+  currentSettings?: ColorSettings;
   onSettingsChange?: (settings: ColorSettings) => void;
 }
 
@@ -13,12 +14,23 @@ interface ColorSettings {
   saturation: number;
 }
 
-const ColorPanel: React.FC<ColorPanelProps> = ({ onSettingsChange }) => {
+const ColorPanel: React.FC<ColorPanelProps> = ({ currentSettings, onSettingsChange }) => {
   const [settings, setSettings] = useState<ColorSettings>({
     temperature: 0,
     tint: 0,
     saturation: 0
   });
+
+  // 当外部传入的 currentSettings 变化时,更新内部状态
+  useEffect(() => {
+    if (currentSettings) {
+      setSettings({
+        temperature: currentSettings.temperature,
+        tint: currentSettings.tint,
+        saturation: currentSettings.saturation
+      });
+    }
+  }, [currentSettings]);
 
   const handleItemChange = (label: string, value: number) => {
     const newSettings = {

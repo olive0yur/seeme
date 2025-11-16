@@ -82,7 +82,7 @@
     left: 4px;
     font-size: 12px;
     font-weight: 500;
-    color: #000;
+    color: #fff;
     height: 14px;
     width: 14px;
     display: flex;
@@ -90,7 +90,8 @@
     justify-content: center;
     background: rgba(0, 0, 0, 0.30);
     backdrop-filter: blur(2px);
-    color: #fff;
+    border-radius: 2px;
+    z-index: 10;
 }
 
 .image-selector .image-item .image-item-image {
@@ -107,4 +108,6 @@
     border-radius: 10px;
     cursor: pointer;
     overflow: hidden;
+    position: relative;
+    z-index: 1;
 }

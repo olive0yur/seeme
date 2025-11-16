@@ -24,10 +24,22 @@ interface ImageSettings {
   grain: number;
 }
 
+interface Transform {
+  x: number;
+  y: number;
+  scale: number;
+}
+
+interface ImageState {
+  settings: ImageSettings;
+  transform: Transform;
+  zoomPercentage: number;
+}
+
 interface ImageSelectorProps {
   images: ImageFile[];
   selectedImageId: string | null;
-  imageSettingsMap?: Record<string, ImageSettings>;
+  imageSettingsMap?: Record<string, ImageState>;
   onImageSelect: (imageId: string) => void;
   onImageRemove: (imageId: string) => void;
   onAddImages: () => void;
@@ -61,15 +73,16 @@ export default function ImageSelector({
     <>
       {/* 上传按钮 */}
       <button className='add-but' onClick={onAddImages}>+</button>
-      
+
       {/* 分割线 */}
       <div className='divider-line'></div>
-      
+
       {/* 图片列表 */}
       <div className='image-list'>
         {images.map((image, index) => {
-          const settings = imageSettingsMap[image.id] || defaultSettings;
-          
+          const imageState = imageSettingsMap[image.id];
+          const settings = imageState?.settings || defaultSettings;
+
           return (
             <div 
               key={image.id}
